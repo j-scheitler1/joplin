@@ -247,4 +247,31 @@ describe('markdownCommands.toggleList', () => {
 			'- 192.168.1.1. This\n- 127.0.0.1. is\n- 0.0.0.0. a list',
 		);
 	});
+
+	it('should toggle non-tight checklist lines without treating them as a single block', async () => {
+		const nonTightChecklistText = [
+			'- [ ] A',
+			'',
+			'- [ ] B',
+			'',
+			'- [ ] C',
+		].join('\n');
+
+		const expectedAfterToggle = [
+			'A',
+			'',
+			'B',
+			'',
+			'C',
+		].join('\n');
+
+		const editor = await createTestEditor(
+			nonTightChecklistText,
+			EditorSelection.range(0, nonTightChecklistText.length),
+			['BulletList'],
+		);
+
+		toggleList(ListType.CheckList)(editor);
+		expect(editor.state.doc.toString()).toBe(expectedAfterToggle);
+	});
 });
